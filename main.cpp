@@ -6,12 +6,13 @@ using FText = std::string;
 using int32 = int;
 
 void PrintIntro();
-FText GetGuess();
+FText GetValidGuessFromUserInput();
 void PlayGame();
 bool AskToPlayAgain();
 void PrintGuessResult(BullCowCount);
 void SummariseTheGame();
 
+// TODO remove global BCGame use dependency injection pattern
 FBullCowGame BCGame;
 
 int main()
@@ -27,11 +28,13 @@ int main()
 	return 0;
 }
 
+// TODO remove global BCGame
 void PlayGame()
 {
 	while (BCGame.IsPlaying())
 	{
-		BullCowCount  GuessResult = BCGame.SubmitGuess( GetGuess() );
+		FText Guess = GetValidGuessFromUserInput();
+		BullCowCount  GuessResult = BCGame.SubmitGuess( Guess );
 
 		PrintGuessResult(GuessResult);
 
@@ -39,6 +42,7 @@ void PlayGame()
 	}
 }
 
+// TODO remove global BCGame
 void PrintIntro()
 {
 	std::cout << "Welcome to Bulls and Cows, a fun word game. \n";
@@ -47,12 +51,17 @@ void PrintIntro()
 	return;
 }
 
-FText GetGuess()
+// TODO remove global BCGame
+FText GetValidGuessFromUserInput()
 {
-	int32 CurrentTry = BCGame.GetCurrentTry();
+	EGuessStatus GuessStatus;
 	FText Guess = "";
-	std::cout << "Try " << CurrentTry << " Enter your guess: ";
-	getline(std::cin, Guess);
+	std::cout << "Try " << BCGame.GetCurrentTry() << " Enter your guess: ";
+	do {
+		getline(std::cin, Guess);
+		GuessStatus = BCGame.CheckGuessValidity(Guess);
+	} while (GuessStatus != EGuessStatus::OK);
+
 	return Guess;
 }
 
@@ -73,14 +82,14 @@ void PrintGuessResult(BullCowCount GuessResult)
 	std::cout << std::endl;
 }
 
-
+// TODO remove global BCGame
 void SummariseTheGame()
 {
 	switch ( BCGame.GetGameState() ) {
-		case Win:
+		case EGameState::Win:
 			std::cout << "You win !";
 			break;
-		case Lost:
+		case EGameState::Lost:
 			std::cout << "You lose ! ";
 			break;
 		default:

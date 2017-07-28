@@ -4,18 +4,26 @@
 
 void FBullCowGame::Reset()
 {
-	constexpr int32 MAX_TRIES = 2;
+	// TODO put const in main
+	constexpr int32 MAX_TRIES = 5;
 	const FString HIDDEN_WORD = "gael";
 	MyCurrentTry = 1;
 	MyMaxTries = MAX_TRIES;
 	MyHiddenWord = HIDDEN_WORD;
-	MyGameState = Playing;
+	MyGameState = EGameState::Playing;
 	return;
 }
 
-bool FBullCowGame::CheckGuessValidity(FText)
+EGuessStatus FBullCowGame::CheckGuessValidity(FText) const
 {
-	return false;
+	// if the guess isn't an isogram
+		// return an error
+	// if the guess isn't all lowercase
+		// return error
+	// if the guess length is wrong
+		// return error
+	// otherwise
+	return EGuessStatus::OK;
 }
 
 FBullCowGame::FBullCowGame()
@@ -23,7 +31,7 @@ FBullCowGame::FBullCowGame()
 	Reset();
 }
 
-GameState FBullCowGame::GetGameState() const
+EGameState FBullCowGame::GetGameState() const
 {
 	return MyGameState;
 }
@@ -50,12 +58,12 @@ int32 FBullCowGame::GetNumberOfTriesLeft() const
 
 bool FBullCowGame::IsPlaying() const
 {
-	return GetGameState() == Playing;
+	return GetGameState() == EGameState::Playing;
 }
 
 bool FBullCowGame::IsGameWon() const
 {
-	return false;
+	return GetGameState() == EGameState::Win;
 }
 // TODO this function is doing too much
 BullCowCount FBullCowGame::SubmitGuess(FText Guess)
@@ -72,10 +80,10 @@ void FBullCowGame::UpdateState(BullCowCount BullCowCount)
 {
 	if (BullCowCount.Bulls == GetHiddenWordLength())
 	{
-		MyGameState = Win;
+		MyGameState = EGameState::Win;
 	}
 	else if (MyCurrentTry == MyMaxTries) {
-		MyGameState = Lost;
+		MyGameState = EGameState::Lost;
 	}
 	else {
 		MyCurrentTry++;

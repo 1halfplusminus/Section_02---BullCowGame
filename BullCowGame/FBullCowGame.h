@@ -6,11 +6,20 @@ using FText = std::string;
 using int32 = int;
 using FString = std::string;
 
-enum GameState 
+enum class EGameState 
 {
 	Playing,
 	Win,
 	Lost
+};
+
+enum class EGuessStatus 
+{
+	OK,
+	Not_Isogram,
+	Not_Lowercase,
+	Wrong_length,
+
 };
 struct BullCowCount
 {
@@ -21,17 +30,19 @@ struct BullCowCount
 class FBullCowGame {
 public:
 
+	// TODO create un meaning full constructor
 	FBullCowGame();
 
-	GameState GetGameState() const;
+	EGameState GetGameState() const;
 	int32 GetMaxTries() const;
 	int32 GetCurrentTry() const;
 	int32 GetHiddenWordLength() const;
 	int32 GetNumberOfTriesLeft() const;
 	bool  IsPlaying() const;
 	bool  IsGameWon() const;
-	void Reset(); // TODO make a more rich return value
-	bool CheckGuessValidity(FText); // TODO make a more rich return value.
+
+	EGuessStatus CheckGuessValidity(FText) const; // TODO make a more rich return value.
+	void Reset(); 
 	// provide a methode for counting bulls & cows, and increasing try # assuming the guess is valid
 	BullCowCount SubmitGuess(FText);
 private:
@@ -39,7 +50,7 @@ private:
 	int32 MyMaxTries;
 	int32 MyCurrentTry;
 	FString MyHiddenWord;
-	GameState MyGameState;
+	EGameState MyGameState;
 
 	// Update the game state according to the number of Bulls and Cows find and the Number of max tries
 	void UpdateState(BullCowCount);
