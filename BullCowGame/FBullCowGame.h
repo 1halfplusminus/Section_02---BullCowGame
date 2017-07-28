@@ -27,7 +27,9 @@ public:
 	int32 GetMaxTries() const;
 	int32 GetCurrentTry() const;
 	int32 GetHiddenWordLength() const;
-	bool IsGameWon() const;
+	int32 GetNumberOfTriesLeft() const;
+	bool  IsPlaying() const;
+	bool  IsGameWon() const;
 	void Reset(); // TODO make a more rich return value
 	bool CheckGuessValidity(FText); // TODO make a more rich return value.
 	// provide a methode for counting bulls & cows, and increasing try # assuming the guess is valid
@@ -41,4 +43,5 @@ private:
 
 	// Update the game state according to the number of Bulls and Cows find and the Number of max tries
 	void UpdateState(BullCowCount);
-};
+	BullCowCount CompareWord(FText,FText);
+}; 

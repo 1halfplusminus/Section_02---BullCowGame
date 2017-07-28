@@ -43,6 +43,16 @@ int32 FBullCowGame::GetHiddenWordLength() const
 	return MyHiddenWord.length();
 }
 
+int32 FBullCowGame::GetNumberOfTriesLeft() const
+{
+	return GetMaxTries() - (GetCurrentTry() - 1);
+}
+
+bool FBullCowGame::IsPlaying() const
+{
+	return GetGameState() == Playing;
+}
+
 bool FBullCowGame::IsGameWon() const
 {
 	return false;
@@ -50,35 +60,12 @@ bool FBullCowGame::IsGameWon() const
 // TODO this function is doing too much
 BullCowCount FBullCowGame::SubmitGuess(FText Guess)
 {
-	BullCowCount Count;
-	int32 CurrentGuessPosition = 0;
-	// loop through all letters in the guess
-	for (char& CharacterInGuess : Guess) 
-	{
-		int32 CurrentHiddenWordPosition = 0;
-		// compare letters against the hidden word
-		for (char& CharacterInHiddenWord : MyHiddenWord) 
-		{
-			if (tolower(CharacterInHiddenWord) == tolower(CharacterInGuess))
-			{
-				// incriment bulls if they're in the same place
-				if (CurrentGuessPosition == CurrentHiddenWordPosition)
-				{
-					Count.Bulls++;
-				}
-				// increment cows if not
-				else 
-				{
-					Count.Cows++;
-				}
-				break;
-			}
-			CurrentHiddenWordPosition++;
-		}
-		CurrentGuessPosition++;
-	}
-	UpdateState(Count);
-	return Count;
+	//Compare the guess word to the hidden word
+	BullCowCount ComparaisonResult = CompareWord(Guess,MyHiddenWord);
+	//Update the game state depending of the result
+	UpdateState(ComparaisonResult);
+
+	return ComparaisonResult;
 }
 
 void FBullCowGame::UpdateState(BullCowCount BullCowCount)
@@ -93,4 +80,36 @@ void FBullCowGame::UpdateState(BullCowCount BullCowCount)
 	else {
 		MyCurrentTry++;
 	}
+}
+
+BullCowCount FBullCowGame::CompareWord(FText Guess,FText WordToFind)
+{
+	BullCowCount Count;
+	int32 CurrentGuessPosition = 0;
+	// loop through all letters in the guess
+	for (char& CharacterInGuess : Guess)
+	{
+		int32 CurrentHiddenWordPosition = 0;
+		// compare letters against the hidden word
+		for (char& CharacterInHiddenWord : WordToFind)
+		{
+			if (tolower(CharacterInHiddenWord) == tolower(CharacterInGuess))
+			{
+				// incriment bulls if they're in the same place
+				if (CurrentGuessPosition == CurrentHiddenWordPosition)
+				{
+					Count.Bulls++;
+				}
+				// increment cows if not
+				else
+				{
+					Count.Cows++;
+				}
+				break;
+			}
+			CurrentHiddenWordPosition++;
+		}
+		CurrentGuessPosition++;
+	}
+	return Count;
 }
