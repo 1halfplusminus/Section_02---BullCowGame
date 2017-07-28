@@ -32,10 +32,7 @@ void PlayGame()
 	int32 MaxTries = BCGame.GetMaxTries();
 	while (BCGame.IsPlaying())
 	{
-		FText Guess = "";
-		Guess = GetGuess();
-
-		BullCowCount  GuessResult = BCGame.SubmitGuess(Guess);
+		BullCowCount  GuessResult = BCGame.SubmitGuess( GetGuess() );
 
 		PrintGuessResult(GuessResult);
 
