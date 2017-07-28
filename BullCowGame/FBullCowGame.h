@@ -41,12 +41,11 @@ public:
 	bool  IsPlaying() const;
 	bool  IsGameWon() const;
 
-	EGuessStatus CheckGuessValidity(FText) const; // TODO make a more rich return value.
+	EGuessStatus CheckGuessValidity(FText) const;
 	void Reset(); 
 	// provide a methode for counting bulls & cows, and increasing try # assuming the guess is valid
 	BullCowCount SubmitGuess(FText);
 private:
-	// See constructor for init
 	int32 MyMaxTries;
 	int32 MyCurrentTry;
 	FString MyHiddenWord;
