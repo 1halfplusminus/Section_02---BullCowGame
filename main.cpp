@@ -29,7 +29,6 @@ int main()
 
 void PlayGame()
 {
-	int32 MaxTries = BCGame.GetMaxTries();
 	while (BCGame.IsPlaying())
 	{
 		BullCowCount  GuessResult = BCGame.SubmitGuess( GetGuess() );
