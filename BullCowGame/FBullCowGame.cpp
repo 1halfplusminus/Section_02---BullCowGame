@@ -1,17 +1,27 @@
+#pragma once
 
 #include "FBullCowGame.h"
 #include <stdexcpt.h>
 #include <map>
+#include <array>
+#include <random>
+// to make syntaxe Unreal friendly
 #define TMap std::map
+#define TArray std::array
+using int32 = int;
+
+std::default_random_engine eng;
 
 void FBullCowGame::Reset()
 {
-	// TODO put const in main
-	constexpr int32 MAX_TRIES = 5;
-	const FString HIDDEN_WORD = "gael";
+	// TODO read hidden word from file or web api
+	TArray<FText, 3> ListOfWords = { "planet","pick","top" }; // this must be a isogram
+	std::uniform_int_distribution<int> dist(0, ListOfWords.size() - 1);
+	
+	int RandomIndex = dist(eng);
+
 	MyCurrentTry = 1;
-	MyMaxTries = MAX_TRIES;
-	MyHiddenWord = HIDDEN_WORD;
+	MyHiddenWord = ListOfWords[RandomIndex];
 	MyGameState = EGameState::Playing;
 	return;
 }
@@ -44,7 +54,8 @@ EGameState FBullCowGame::GetGameState() const
 
 int32 FBullCowGame::GetMaxTries() const
 {
-	return MyMaxTries;
+	TMap<int32, int32> WordLengthToMaxTries{ {3,4},{4,7},{5,10},{6,16},{7,20} };
+	return WordLengthToMaxTries[MyHiddenWord.length()];
 }
 
 int32 FBullCowGame::GetCurrentTry() const
@@ -88,7 +99,7 @@ void FBullCowGame::UpdateState(BullCowCount BullCowCount)
 	{
 		MyGameState = EGameState::Win;
 	}
-	else if (MyCurrentTry == MyMaxTries) {
+	else if (MyCurrentTry == GetMaxTries()) {
 		MyGameState = EGameState::Lost;
 	}
 	else {

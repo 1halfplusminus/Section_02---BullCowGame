@@ -1,10 +1,18 @@
+/*	This is the console executable, that makes use of the BullCow class
+This acts as the view in a MVC pattern, and is responsible for all
+user interaction. For game logic see the FBullCowGame class.
+*/
+#pragma once
+
 #include <iostream>
 #include <string>
 #include "BullCowGame\FBullCowGame.h"
 
+// to make syntaxe Unreal friendly
 using FText = std::string;
 using int32 = int;
 
+// function prototypes as outside a class
 void PrintIntro();
 FText GetValidGuessFromUserInput();
 void PlayGame();
@@ -38,9 +46,8 @@ void PlayGame()
 		BullCowCount  GuessResult = BCGame.SubmitValidGuess( Guess );
 
 		PrintGuessResult(GuessResult);
-
-		SummariseTheGame();
 	}
+	SummariseTheGame();
 }
 
 // TODO remove global BCGame
@@ -57,7 +64,7 @@ FText GetValidGuessFromUserInput()
 {
 	EGuessStatus GuessStatus = EGuessStatus::Invalid;
 	FText Guess = "";
-	std::cout << "Try " << BCGame.GetCurrentTry() << " Enter your guess: ";
+	std::cout << "Try " << BCGame.GetCurrentTry() << " of " << BCGame.GetMaxTries()  <<". Enter your guess: ";
 	do {
 		getline(std::cin, Guess);
 		GuessStatus = BCGame.CheckGuessValidity(Guess);
@@ -70,11 +77,9 @@ FText GetValidGuessFromUserInput()
 
 bool AskToPlayAgain()
 {
-	std::cout << "Do you want to play again ? ";
 	FText Response = "";
-
+	std::cout << "Do you want to play again ? \n";
 	getline(std::cin, Response);
-
 	return (tolower(Response[0]) == 'y');
 }
 
@@ -95,14 +100,6 @@ void SummariseTheGame()
 		case EGameState::Lost:
 			std::cout << "You lose ! ";
 			break;
-		default:
-			if (BCGame.GetNumberOfTriesLeft() == 1)
-			{
-				std::cout << "it's the last attempt !";
-			}
-			else {
-				std::cout << BCGame.GetNumberOfTriesLeft() << " attempts left !";
-			}
 			
 	}
 	std::cout << std::endl;
@@ -116,13 +113,12 @@ void PrintReadbleErrorIfAny(EGuessStatus Status)
 	switch (Status)
 	{
 		case EGuessStatus::Not_Isogram:
-			std::cout << "Please enter a word without repeating letters.\n";
+			std::cout << "Please enter a word without repeating letters.\n\n";
 			break;
 		case EGuessStatus::Wrong_length:
-			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n";
+			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n\n";
 			break;
 		default:
 			break;
 	}
-	std::cout << std::endl;
 }

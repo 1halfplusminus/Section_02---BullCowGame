@@ -1,7 +1,11 @@
+/* The game logic (no view code or riect user interaction)
+The game is a simple guess the word game based on Mastermind
+*/
 #pragma once
 
 #include <string>
 
+// to make syntax Unreal friendly
 using FText = std::string;
 using int32 = int;
 using FString = std::string;
@@ -50,7 +54,6 @@ protected:
 	bool IsIsogram(FText) const;
 	bool IsLengthValid(FText) const;
 private:
-	int32 MyMaxTries;
 	int32 MyCurrentTry;
 	FString MyHiddenWord;
 	EGameState MyGameState;
