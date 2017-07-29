@@ -15,9 +15,9 @@ enum class EGameState
 
 enum class EGuessStatus 
 {
+	Invalid,
 	OK,
 	Not_Isogram,
-	Not_Lowercase,
 	Wrong_length,
 
 };
@@ -44,7 +44,11 @@ public:
 	EGuessStatus CheckGuessValidity(FText) const;
 	void Reset(); 
 	// provide a methode for counting bulls & cows, and increasing try # assuming the guess is valid
-	BullCowCount SubmitGuess(FText);
+	BullCowCount SubmitValidGuess(FText);
+
+protected:
+	bool IsIsogram(FText) const;
+	bool IsLengthValid(FText) const;
 private:
 	int32 MyMaxTries;
 	int32 MyCurrentTry;

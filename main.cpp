@@ -11,6 +11,7 @@ void PlayGame();
 bool AskToPlayAgain();
 void PrintGuessResult(BullCowCount);
 void SummariseTheGame();
+void PrintReadbleErrorIfAny(EGuessStatus);
 
 // TODO remove global BCGame use dependency injection pattern
 FBullCowGame BCGame;
@@ -34,7 +35,7 @@ void PlayGame()
 	while (BCGame.IsPlaying())
 	{
 		FText Guess = GetValidGuessFromUserInput();
-		BullCowCount  GuessResult = BCGame.SubmitGuess( Guess );
+		BullCowCount  GuessResult = BCGame.SubmitValidGuess( Guess );
 
 		PrintGuessResult(GuessResult);
 
@@ -54,12 +55,13 @@ void PrintIntro()
 // TODO remove global BCGame
 FText GetValidGuessFromUserInput()
 {
-	EGuessStatus GuessStatus;
+	EGuessStatus GuessStatus = EGuessStatus::Invalid;
 	FText Guess = "";
 	std::cout << "Try " << BCGame.GetCurrentTry() << " Enter your guess: ";
 	do {
 		getline(std::cin, Guess);
 		GuessStatus = BCGame.CheckGuessValidity(Guess);
+		PrintReadbleErrorIfAny(GuessStatus);
 	} while (GuessStatus != EGuessStatus::OK);
 
 	return Guess;
@@ -79,6 +81,7 @@ bool AskToPlayAgain()
 void PrintGuessResult(BullCowCount GuessResult)
 {
 	std::cout << "Cows : " << GuessResult.Cows << " Bulls: " << GuessResult.Bulls;
+	std::cout << std::endl;
 	std::cout << std::endl;
 }
 
@@ -101,6 +104,25 @@ void SummariseTheGame()
 				std::cout << BCGame.GetNumberOfTriesLeft() << " attempts left !";
 			}
 			
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
+}
+
+// TODO remove global BCGame
+void PrintReadbleErrorIfAny(EGuessStatus Status)
+{
+
+	switch (Status)
+	{
+		case EGuessStatus::Not_Isogram:
+			std::cout << "Please enter a word without repeating letters.\n";
+			break;
+		case EGuessStatus::Wrong_length:
+			std::cout << "Please enter a " << BCGame.GetHiddenWordLength() << " letter word.\n";
+			break;
+		default:
+			break;
 	}
 	std::cout << std::endl;
 }

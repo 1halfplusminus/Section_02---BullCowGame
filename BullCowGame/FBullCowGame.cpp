@@ -1,6 +1,8 @@
 
 #include "FBullCowGame.h"
 #include <stdexcpt.h>
+#include <map>
+#define TMap std::map
 
 void FBullCowGame::Reset()
 {
@@ -14,16 +16,20 @@ void FBullCowGame::Reset()
 	return;
 }
 
-EGuessStatus FBullCowGame::CheckGuessValidity(FText) const
+EGuessStatus FBullCowGame::CheckGuessValidity(FText Guess) const
 {
-	// if the guess isn't an isogram
-		// return an error
-	// if the guess isn't all lowercase
-		// return error
-	// if the guess length is wrong
-		// return error
-	// otherwise
-	return EGuessStatus::OK;
+	if (!IsIsogram(Guess))
+	{
+		return EGuessStatus::Not_Isogram;
+	}
+	else if(!IsLengthValid(Guess)) 
+	{
+		return EGuessStatus::Wrong_length;
+	}
+	else 
+	{
+		return EGuessStatus::OK;
+	}
 }
 
 FBullCowGame::FBullCowGame()
@@ -66,7 +72,7 @@ bool FBullCowGame::IsGameWon() const
 	return GetGameState() == EGameState::Win;
 }
 // TODO this function is doing too much
-BullCowCount FBullCowGame::SubmitGuess(FText Guess)
+BullCowCount FBullCowGame::SubmitValidGuess(FText Guess)
 {
 	//Compare the guess word to the hidden word
 	BullCowCount ComparaisonResult = CompareWord(Guess,MyHiddenWord);
@@ -90,18 +96,44 @@ void FBullCowGame::UpdateState(BullCowCount BullCowCount)
 	}
 }
 
+bool FBullCowGame::IsIsogram(FText Word) const
+{
+	bool IsIsogram = true;
+	TMap<char, bool> LetterFound;
+	for (auto Letter : Word)
+	{
+		Letter = tolower(Letter);
+		if (LetterFound[Letter])
+		{
+			IsIsogram = false;
+			break;
+		}
+		else 
+		{
+			LetterFound[Letter] = true;
+		}
+
+	}
+	return IsIsogram;
+}
+
+bool FBullCowGame::IsLengthValid(FText Word) const
+{
+	return Word.length() == MyHiddenWord.length();
+}
+
 BullCowCount FBullCowGame::CompareWord(FText Guess,FText WordToFind)
 {
 	BullCowCount Count;
 	int32 CurrentGuessPosition = 0;
 	// loop through all letters in the guess
-	for (char& CharacterInGuess : Guess)
+	for (char& LetterInGuess : Guess)
 	{
 		int32 CurrentHiddenWordPosition = 0;
 		// compare letters against the hidden word
-		for (char& CharacterInHiddenWord : WordToFind)
+		for (char& LetterInHiddenWord : WordToFind)
 		{
-			if (tolower(CharacterInHiddenWord) == tolower(CharacterInGuess))
+			if (tolower(LetterInHiddenWord) == tolower(LetterInGuess))
 			{
 				// incriment bulls if they're in the same place
 				if (CurrentGuessPosition == CurrentHiddenWordPosition)
