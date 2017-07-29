@@ -5,6 +5,7 @@
 #include <map>
 #include <array>
 #include <random>
+
 // to make syntaxe Unreal friendly
 #define TMap std::map
 #define TArray std::array
